@@ -4,6 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
+[InitializeOnLoad]
 public static class ByteBrewSettingsHandler
 {
     private static ByteBrewSettings _settingsInstance = null;
@@ -11,10 +12,23 @@ public static class ByteBrewSettingsHandler
     {
         get {
             if (_settingsInstance == null) {
-                _settingsInstance = GetOrCreateByteBrewSettings();
+                //_settingsInstance = GetOrCreateByteBrewSettings();
+                Debug.LogError("SettingsInstance was accessed before initialization.");
             }
             return _settingsInstance;
         }
+    }
+
+    // Static constructor runs on load but we delay the actual initialization.
+    static ByteBrewSettingsHandler() 
+    {
+        // Delay initialization until after the AssetDatabase is ready.
+        EditorApplication.delayCall += Initialize;
+    }
+
+    private static void Initialize()
+    {
+        _settingsInstance = GetOrCreateByteBrewSettings();
     }
 
     private static ByteBrewSettings GetOrCreateByteBrewSettings() 
@@ -23,30 +37,9 @@ public static class ByteBrewSettingsHandler
         string bytebrewSettingsPath = Path.Combine(bytebrewSettingsDirPath, "ByteBrewSettings.asset");
 
         AssetDatabase.Refresh();
-
-        // Wait for the AssetDatabase to refresh using delayedCall
-        EditorApplication.delayCall += () => {
-            // Check if the directory exists
-            if (!Directory.Exists(bytebrewSettingsDirPath)) {
-                Directory.CreateDirectory(bytebrewSettingsDirPath);
-                AssetDatabase.Refresh();
-            }
-
-            // Check if the settings file exists
-            if (File.Exists(bytebrewSettingsPath)) {
-                _settingsInstance = AssetDatabase.LoadAssetAtPath<ByteBrewSettings>(bytebrewSettingsPath);
-                if (_settingsInstance != null) {
-                    Debug.Log("ByteBrewSettings.asset loaded successfully");
-                } else {
-                    Debug.LogError("Failed to load ByteBrewSettings.asset");
-                }
-            } else {
-                Debug.LogWarning("ByteBrewSettings.asset not found, creating a new one.");
-            }
-        };
-        
-        /*ByteBrewSettings settings = AssetDatabase.LoadAssetAtPath<ByteBrewSettings>(bytebrewSettingsPath);
+        ByteBrewSettings settings = AssetDatabase.LoadAssetAtPath<ByteBrewSettings>(bytebrewSettingsPath);
         if (settings != null) {
+            Debug.Log("ByteBrewSettings.asset loaded successfully");
             return settings;
         }
 
@@ -67,7 +60,6 @@ public static class ByteBrewSettingsHandler
             Debug.LogError("Error creating ByteBrewSettings.asset: " + e.Message);
         }
 
-        return settings;*/
-        return null;
+        return settings;
     }
 }

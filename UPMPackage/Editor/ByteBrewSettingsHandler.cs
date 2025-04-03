@@ -25,11 +25,15 @@ public static class ByteBrewSettingsHandler
         AssetDatabase.Refresh();
 
         // Find assets of type ByteBrewSettings
-        string[] guids = AssetDatabase.FindAssets("t:ByteBrewSettings");
-        foreach (string guid in guids)
-        {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-            Debug.Log("Found ByteBrewSettings asset at: " + path);
+        string fileName = "ByteBrewSettings.asset";
+        string searchFilter = $"glob:\"Assets/**/*{fileName}\"";
+        string[] guids = AssetDatabase.FindAssets(searchFilter);
+        string[] paths = guids.Select(AssetDatabase.GUIDToAssetPath).ToArray();
+
+        if (paths.Length > 0) {
+            foreach (string path in paths) {
+                Debug.Log("Found ByteBrewSettings at: " + path);
+            }
         }
 
         ByteBrewSettings settings = AssetDatabase.LoadAssetAtPath<ByteBrewSettings>(bytebrewSettingsPath);

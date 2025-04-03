@@ -28,6 +28,7 @@ public static class ByteBrewSettingsHandler
     private static void Initialize()
     {
         _settingsInstance = GetOrCreateByteBrewSettings();
+        // We call this here to ensure that the settings are loaded and available.
         ByteBrewOnLoadPackageImportCredsHolder.SetSDKKeysToPlayerPrefs();
     }
 

@@ -22,6 +22,7 @@ public static class ByteBrewSettingsHandler
         string bytebrewSettingsDirPath = Path.Combine("Assets", "ByteBrewSDK", "Resources");
         string bytebrewSettingsPath = Path.Combine(bytebrewSettingsDirPath, "ByteBrewSettings.asset");
 
+        AssetDatabase.Refresh();
         ByteBrewSettings settings = AssetDatabase.LoadAssetAtPath<ByteBrewSettings>(bytebrewSettingsPath);
         if (settings != null) {
             return settings;

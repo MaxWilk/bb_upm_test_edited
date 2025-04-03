@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using System.Linq;
 
 public static class ByteBrewSettingsHandler
 {
@@ -24,7 +23,20 @@ public static class ByteBrewSettingsHandler
         string bytebrewSettingsPath = Path.Combine(bytebrewSettingsDirPath, "ByteBrewSettings.asset");
 
         AssetDatabase.Refresh();
-        AssetDatabase.ImportAsset(bytebrewSettingsPath, ImportAssetOptions.ForceSynchronousImport);
+
+        int loops = 0;
+        // Wait for the AssetDatabase to refresh
+        while (AssetDatabase.IsAssetImportWorkerRunning() || EditorApplication.isCompiling || EditorApplication.isUpdating) {
+            Debug.Log("Waiting for AssetDatabase to refresh...");
+            System.Threading.Thread.Sleep(100);
+
+            loops++;
+            if (loops > 100) {
+                Debug.LogError("AssetDatabase refresh timed out.");
+                return null;
+            }
+        }
+        
         ByteBrewSettings settings = AssetDatabase.LoadAssetAtPath<ByteBrewSettings>(bytebrewSettingsPath);
         if (settings != null) {
             return settings;

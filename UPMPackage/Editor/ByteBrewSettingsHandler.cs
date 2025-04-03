@@ -12,8 +12,7 @@ public static class ByteBrewSettingsHandler
     {
         get {
             if (_settingsInstance == null) {
-                //_settingsInstance = GetOrCreateByteBrewSettings();
-                Debug.LogError("SettingsInstance was accessed before initialization.");
+                Debug.LogError("ByteBrewSettings.asset SettingsInstance was accessed before initialization.");
             }
             return _settingsInstance;
         }
@@ -29,6 +28,7 @@ public static class ByteBrewSettingsHandler
     private static void Initialize()
     {
         _settingsInstance = GetOrCreateByteBrewSettings();
+        ByteBrewOnLoadPackageImportCredsHolder.SetSDKKeysToPlayerPrefs();
     }
 
     private static ByteBrewSettings GetOrCreateByteBrewSettings() 
@@ -37,6 +37,7 @@ public static class ByteBrewSettingsHandler
         string bytebrewSettingsPath = Path.Combine(bytebrewSettingsDirPath, "ByteBrewSettings.asset");
 
         AssetDatabase.Refresh();
+
         ByteBrewSettings settings = AssetDatabase.LoadAssetAtPath<ByteBrewSettings>(bytebrewSettingsPath);
         if (settings != null) {
             Debug.Log("ByteBrewSettings.asset loaded successfully");

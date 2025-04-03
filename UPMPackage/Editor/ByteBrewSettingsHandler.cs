@@ -23,6 +23,15 @@ public static class ByteBrewSettingsHandler
         string bytebrewSettingsPath = Path.Combine(bytebrewSettingsDirPath, "ByteBrewSettings.asset");
 
         AssetDatabase.Refresh();
+
+        // Find assets of type ByteBrewSettings
+        string[] guids = AssetDatabase.FindAssets("t:ByteBrewSettings");
+        foreach (string guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            Debug.Log("Found ByteBrewSettings asset at: " + path);
+        }
+
         ByteBrewSettings settings = AssetDatabase.LoadAssetAtPath<ByteBrewSettings>(bytebrewSettingsPath);
         if (settings != null) {
             return settings;

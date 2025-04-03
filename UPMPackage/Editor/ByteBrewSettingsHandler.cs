@@ -24,19 +24,7 @@ public static class ByteBrewSettingsHandler
         string bytebrewSettingsPath = Path.Combine(bytebrewSettingsDirPath, "ByteBrewSettings.asset");
 
         AssetDatabase.Refresh();
-
-        // Find assets of type ByteBrewSettings
-        string fileName = "ByteBrewSettings.asset";
-        string searchFilter = $"glob:\"Assets/**/*{fileName}\"";
-        string[] guids = AssetDatabase.FindAssets(searchFilter);
-        string[] paths = guids.Select(AssetDatabase.GUIDToAssetPath).ToArray();
-
-        if (paths.Length > 0) {
-            foreach (string path in paths) {
-                Debug.Log("Found ByteBrewSettings at: " + path);
-            }
-        }
-
+        AssetDatabase.ImportAsset(bytebrewSettingsPath, ImportAssetOptions.ForceSynchronousImport);
         ByteBrewSettings settings = AssetDatabase.LoadAssetAtPath<ByteBrewSettings>(bytebrewSettingsPath);
         if (settings != null) {
             return settings;
